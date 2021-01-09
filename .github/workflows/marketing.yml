@@ -1,4 +1,4 @@
-name: deploy-container
+name: deploy-marketing-container
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
 
 defaults:
   run:
-    working-directory: container
+    working-directory: marketing
 
 jobs:
   build:
@@ -19,8 +19,6 @@ jobs:
       - uses: actions/checkout@v2
       - run: npm install
       - run: npm run build
-        env:
-          AWS_DOMAIN: ${{ secrets.AWS_DOMAIN }}
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -30,7 +28,7 @@ jobs:
           aws-region: ap-south-1
 
       - name: Syncing dist with S3 bucket
-        run: aws s3 sync dist s3://${{ secrets.AWS_S3_BUCKET_NAME }}/container/latest
+        run: aws s3 sync dist s3://${{ secrets.AWS_S3_BUCKET_NAME }}/marketing/latest
 
       - name: Invalidate index.html
-        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_DIST_ID }} --paths "/container/latest/index.html"
+        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_DIST_ID }} --paths "/marketing/latest/remoteEntry.js"
