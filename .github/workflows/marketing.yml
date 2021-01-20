@@ -4,12 +4,12 @@ on:
   push:
     branches:
       - master
-    # paths:
-    #   - "container/**"
+    paths:
+      - "packages/marketing/**"
 
 defaults:
   run:
-    working-directory: marketing
+    working-directory: packages/marketing
 
 jobs:
   build:
