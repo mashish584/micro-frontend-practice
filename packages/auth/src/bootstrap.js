@@ -1,18 +1,17 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { createMemoryHistory, createBrowserHistory } from "history";
+import { createBrowserHistory, createMemoryHistory } from "history";
 import App from "./App";
 
-// Create Mount function
-const mount = (el, { onNavigate, defaultRouting, initialPath }) => {
+const mount = (el, { defaultConfig, onNavigationChange, initialPath }) => {
   const history =
-    defaultRouting ||
+    defaultConfig ||
     createMemoryHistory({
       initialEntries: [initialPath],
     });
 
-  if (onNavigate) {
-    history.listen(onNavigate);
+  if (onNavigationChange) {
+    history.listen(onNavigationChange);
   }
 
   ReactDOM.render(<App history={history} />, el);
@@ -20,6 +19,7 @@ const mount = (el, { onNavigate, defaultRouting, initialPath }) => {
   return {
     onParentChange: ({ pathname: nextpathname }) => {
       const { pathname } = history.location;
+
       if (pathname !== nextpathname) {
         history.push(nextpathname);
       }
@@ -27,16 +27,14 @@ const mount = (el, { onNavigate, defaultRouting, initialPath }) => {
   };
 };
 
-//Check if we're in development mode to render the application in isolation
 if (process.env.NODE_ENV === "development") {
-  const rootElement = document.querySelector("#marketing-root");
+  const rootElement = document.querySelector("#auth-root");
 
   if (rootElement) {
     mount(rootElement, {
-      defaultRouting: createBrowserHistory(),
+      defaultConfig: createBrowserHistory(),
     });
   }
 }
 
-//Make mount function available for container
 export { mount };
